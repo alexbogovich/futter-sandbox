@@ -15,6 +15,7 @@ class MyApp extends StatelessWidget {
 
 class RandomWordsState extends State<RandomWords> {
   final List<WordPair> _suggestions = <WordPair>[];
+  final Set<WordPair> _saved = Set<WordPair>();
   final TextStyle _biggerFont = const TextStyle(fontSize: 18);
 
   Widget _buildSuggestions() {
@@ -51,25 +52,36 @@ class RandomWordsState extends State<RandomWords> {
   }
 
   Widget _buildRow(WordPair pair) {
+    final bool alreadySaved = _saved.contains(pair);
     return ListTile(
       title: Text(
         pair.asPascalCase,
         style: _biggerFont,
       ),
+      trailing: Icon(
+        alreadySaved ? Icons.favorite : Icons.favorite_border,
+        color: alreadySaved ? Colors.red : null,
+      ),
+      onTap: () {
+        setState(() {
+          if (alreadySaved) {
+            _saved.remove(pair);
+          } else {
+            _saved.add(pair);
+          }
+        });
+      },
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    //final wordPair = WordPair.random(); // Delete these... 
-    //return Text(wordPair.asPascalCase); // ... two lines.
-
-    return Scaffold (                   // Add from here... 
+    return Scaffold(
       appBar: AppBar(
         title: Text('Startup Name Generator'),
       ),
       body: _buildSuggestions(),
-    );                                      // ... to here.
+    );
   }
 }
 
